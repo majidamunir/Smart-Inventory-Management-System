@@ -68,4 +68,12 @@ class ProductController extends Controller
     {
         return strtoupper(substr(md5(uniqid(mt_rand(), true)), 0, $length));
     }
+
+    public function searchProducts(Request $request)
+    {
+        $query = $request->input('query');
+        $products = Product::where('name', 'LIKE', "%{$query}%")->get();
+
+        return response()->json(['products' => $products]);
+    }
 }

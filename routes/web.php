@@ -5,6 +5,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\TransactionController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -18,9 +19,11 @@ Route::middleware('auth')->group(function () {
     Route::get('dashboard', [UserController::class, 'dashboard'])->name('dashboard');
 });
 
-Route::middleware(['auth', 'isAdmin:admin,warehouse_manager'])->group(function () {
+Route::middleware(['auth', 'isAdmin:admin,warehouse_manager,cashier'])->group(function () {
     Route::resource('roles', RoleController::class);
     Route::resource('products', ProductController::class);
+    Route::get('/search-products', [ProductController::class, 'searchProducts']);
     Route::resource('categories', CategoryController::class);
+    Route::resource('transactions', TransactionController::class);
 });
 

@@ -132,16 +132,16 @@
             background-color: #f1f8e9;
         }
 
-        .sales-overview {
-            background-color: #ffe0b2;
-        }
-
         .stock-alerts {
             background-color: #fce4ec;
         }
 
         .warehouse-utilization {
             background-color: #e8f5e9;
+        }
+
+        .sales-overview {
+            background-color: #ffe0b2;
         }
 
         .btn {
@@ -196,19 +196,19 @@
         @if(auth()->user()->role === 'admin')
             <section class="card inventory-summary">
                 <h2>User Roles</h2>
-                <a href="{{ route('roles.index') }}" class="btn btn-light">Add Users</a>
+                <a href="{{ route('roles.index') }}" class="btn btn-light">Users</a>
             </section>
         @endif
 
         @if(in_array(auth()->user()->role, ['admin', 'warehouse_manager']))
-            <section class="card inventory-summary">
-                <h2>Inventory Summary</h2>
-                <a href="{{ route('products.index') }}" class="btn btn-light">Add Products</a>
+            <section class="card recent-orders-card">
+                <h2>Product Categories</h2>
+                <a href="{{ route('categories.index') }}" class="btn btn-light">Category</a>
             </section>
-                <section class="card recent-orders-card">
-                    <h2>Categories</h2>
-                    <a href="{{ route('categories.index') }}" class="btn btn-light">Add Category</a>
-                </section>
+            <section class="card inventory-summary">
+                <h2>Product Inventory</h2>
+                <a href="{{ route('products.index') }}" class="btn btn-light">Products</a>
+            </section>
         @endif
 
         <section class="card recent-orders-card">
@@ -219,16 +219,19 @@
             <h2>Supplier Performance</h2>
         </section>
 
+        @if(in_array(auth()->user()->role, ['admin', 'warehouse_manager', 'cashier']))
+            <section class="card stock-alerts">
+                <h2>Product Transactions</h2>
+                <a href="{{ route('transactions.index') }}" class="btn btn-light">Transactions</a>
+            </section>
+        @endif
+
         <section class="card sales-overview">
             <h2>Sales Overview</h2>
         </section>
 
-        <section class="card stock-alerts">
-            <h2>Stock Alerts</h2>
-        </section>
-
         <section class="card warehouse-utilization">
-            <h2>Warehouse Utilization</h2>
+            <h2>Inventory Reports</h2>
         </section>
     </main>
 
