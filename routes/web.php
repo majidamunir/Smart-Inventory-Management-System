@@ -22,7 +22,6 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'isAdmin:admin,warehouse_manager,cashier'])->group(function () {
     Route::resource('roles', RoleController::class);
     Route::resource('products', ProductController::class);
-    Route::get('/search-products', [ProductController::class, 'searchProducts']);
     Route::resource('categories', CategoryController::class);
     Route::resource('transactions', TransactionController::class);
 });

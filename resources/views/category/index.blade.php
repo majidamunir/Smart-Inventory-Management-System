@@ -92,9 +92,11 @@
         </div>
     @endif
 
-    <button class="btn btn-primary mb-3" id="openCreateModalBtn">
-        <i class="fas fa-plus"></i> Add Category
-    </button>
+    @if(auth()->user()->role === 'admin' || auth()->user()->role === 'warehouse_manager')
+        <button class="btn btn-primary mb-3" id="openCreateModalBtn">
+            <i class="fas fa-plus"></i> Add Category
+        </button>
+    @endif
 
     <!-- Table of Categories -->
     <div class="card mb-4">
@@ -116,25 +118,34 @@
                         <td>{{ $category->name }}</td>
                         <td>{{ $category->description ?? 'N/A' }}</td>
                         <td>
-                            <!-- Button to open the edit modal -->
-                            <button class="btn btn-info" onclick="openEditModal('{{ $category->id }}', '{{ $category->name }}', '{{ $category->description }}')">
-                                <i class="fas fa-edit"></i>
-                            </button>
+                            @php
+                                $userRole = auth()->user()->role; // Store the role for easier access
+                            @endphp
 
-                            <!-- Link to view the category details -->
+                            @if($userRole === 'admin' || $userRole === 'warehouse_manager')
+                                <!-- Button to open the edit modal for admin, manager, and officer -->
+                                <button class="btn btn-info"
+                                        onclick="openEditModal('{{ $category->id }}', '{{ $category->name }}', '{{ $category->description }}')">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+
+                                <!-- Form to delete the category for admin, manager, and officer -->
+                                <form action="{{ route('categories.destroy', $category->id) }}" method="POST"
+                                      style="display: inline; margin: 0;" onsubmit="return confirmDelete()">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            @endif
+
+                            <!-- Link to view the category details for all roles -->
                             <a href="{{ route('categories.show', $category->id) }}" class="btn btn-success">
                                 <i class="fas fa-eye"></i>
                             </a>
-
-                            <!-- Form to delete the category -->
-                            <form action="{{ route('categories.destroy', $category->id) }}" method="POST" style="display: inline; margin: 0;" onsubmit="return confirmDelete()">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </form>
                         </td>
+
                     </tr>
                 @endforeach
                 </tbody>
@@ -146,7 +157,8 @@
 </div>
 
 <!-- The Modal for Create Category -->
-<div id="createCategoryModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="createCategoryModalLabel" aria-hidden="true">
+<div id="createCategoryModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="createCategoryModalLabel"
+     aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -180,7 +192,8 @@
 </div>
 
 <!-- The Modal for Edit Category -->
-<div id="editCategoryModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="editCategoryModalLabel" aria-hidden="true">
+<div id="editCategoryModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="editCategoryModalLabel"
+     aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -217,7 +230,7 @@
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    document.getElementById('openCreateModalBtn').addEventListener('click', function() {
+    document.getElementById('openCreateModalBtn').addEventListener('click', function () {
         $('#createCategoryModal').modal('show');
     });
 

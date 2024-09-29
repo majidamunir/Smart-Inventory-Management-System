@@ -169,12 +169,16 @@
     <h2>Admin Dashboard</h2>
     <ul>
         <li><a href="{{ route('dashboard') }}"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-        @if(in_array(auth()->user()->role, ['admin', 'warehouse_manager']))
+        @if(in_array(auth()->user()->role, ['admin', 'warehouse_manager', 'cashier']))
             <li><a href="{{ route('products.index') }}"><i class="fas fa-box"></i> Inventory</a></li>
             <li><a href="{{ route('categories.index') }}"><i class="fas fa-box"></i> Categories</a></li>
         @endif
-        <li><a href="#"><i class="fas fa-shopping-cart"></i> Orders</a></li>
-        <li><a href="#"><i class="fas fa-truck"></i> Suppliers</a></li>
+        @if(in_array(auth()->user()->role, ['admin', 'warehouse_manager', 'procurement_officer']))
+            <li><a href="#"><i class="fas fa-shopping-cart"></i> Orders</a></li>
+        @endif
+        @if(in_array(auth()->user()->role, ['admin', 'warehouse_manager', 'supplier']))
+            <li><a href="#"><i class="fas fa-truck"></i> Suppliers</a></li>
+        @endif
         <li><a href="#"><i class="fas fa-chart-line"></i> Reports</a></li>
         <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
     </ul>
@@ -200,10 +204,10 @@
             </section>
         @endif
 
-        @if(in_array(auth()->user()->role, ['admin', 'warehouse_manager']))
+        @if(in_array(auth()->user()->role, ['admin', 'warehouse_manager', 'cashier']))
             <section class="card recent-orders-card">
                 <h2>Product Categories</h2>
-                <a href="{{ route('categories.index') }}" class="btn btn-light">Category</a>
+                <a href="{{ route('categories.index') }}" class="btn btn-light">Categories</a>
             </section>
             <section class="card inventory-summary">
                 <h2>Product Inventory</h2>
@@ -211,13 +215,18 @@
             </section>
         @endif
 
-        <section class="card recent-orders-card">
-            <h2>Recent Orders</h2>
-        </section>
+        @if(in_array(auth()->user()->role, ['admin', 'warehouse_manager', 'procurement_officer']))
+            <section class="card recent-orders-card">
+                <h2>Recent Orders</h2>
+{{--                <a href="{{ route('orders.index') }}" class="btn btn-light">Orders</a>--}}
+            </section>
+        @endif
 
-        <section class="card supplier-performance">
-            <h2>Supplier Performance</h2>
-        </section>
+        @if(in_array(auth()->user()->role, ['admin', 'warehouse_manager', 'supplier']))
+            <section class="card supplier-performance">
+                <h2>Supplier Performance</h2>
+            </section>
+        @endif
 
         @if(in_array(auth()->user()->role, ['admin', 'warehouse_manager', 'cashier']))
             <section class="card stock-alerts">

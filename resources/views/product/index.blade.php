@@ -7,7 +7,8 @@
     <title>Products</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.min.css" />
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.min.css"/>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -93,9 +94,11 @@
         </div>
     @endif
 
-    <button class="btn btn-primary mb-3" id="openCreateModalBtn">
-        <i class="fas fa-plus"></i> Add Product
-    </button>
+    @if(auth()->user()->role === 'admin' || auth()->user()->role === 'warehouse_manager')
+        <button class="btn btn-primary mb-3" id="openCreateModalBtn">
+            <i class="fas fa-plus"></i> Add Product
+        </button>
+    @endif
 
     <!-- Table of Products -->
     <div class="card mb-4">
@@ -127,28 +130,38 @@
                         <td>{{ $product->category->name ?? 'N/A' }}</td>
                         <td>
                             @foreach ($product->suppliers as $supplier)
-                                <span class="badge badge-info">{{ $supplier->name }}</span> <!-- Display multiple suppliers -->
+                                <span class="badge badge-info">{{ $supplier->name }}</span>
+                                <!-- Display multiple suppliers -->
                             @endforeach
                         </td>
                         <td>
-                            <!-- Edit Button -->
-                            <button class="btn btn-info" onclick="openEditModal('{{ $product->id }}', '{{ $product->name }}', '{{ $product->description }}', '{{ $product->quantity }}', '{{ $product->price }}', '{{ $product->reorder_level }}', {{ json_encode($product->suppliers->pluck('id')) }}, '{{ $product->category_id }}')">
-                                <i class="fas fa-edit"></i>
-                            </button>
+                            @php
+                                $userRole = auth()->user()->role;
+                            @endphp
 
-                            <!-- View Product Link -->
-                            <a href="{{ route('products.show', $product->id) }}" class="btn btn-success" title="View Product">
+                            @if($userRole === 'admin' || $userRole === 'warehouse_manager')
+                                <!-- Edit Button for admin, manager, and officer -->
+                                <button class="btn btn-info"
+                                        onclick="openEditModal('{{ $product->id }}', '{{ $product->name }}', '{{ $product->description }}', '{{ $product->quantity }}', '{{ $product->price }}', '{{ $product->reorder_level }}', {{ json_encode($product->suppliers->pluck('id')) }}, '{{ $product->category_id }}')">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+
+                                <!-- Delete Form for admin, manager, and officer -->
+                                <form action="{{ route('products.destroy', $product->id) }}" method="POST"
+                                      style="display: inline; margin: 0;" onsubmit="return confirmDelete()">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger" title="Delete Product">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            @endif
+
+                            <!-- View Product Link for all roles -->
+                            <a href="{{ route('products.show', $product->id) }}" class="btn btn-success"
+                               title="View Product">
                                 <i class="fas fa-eye"></i>
                             </a>
-
-                            <!-- Delete Form -->
-                            <form action="{{ route('products.destroy', $product->id) }}" method="POST" style="display: inline; margin: 0;" onsubmit="return confirmDelete()">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger" title="Delete Product">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </form>
                         </td>
                     </tr>
                 @endforeach
@@ -161,7 +174,8 @@
 </div>
 
 <!-- The Modal for Create Product -->
-<div id="createProductModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="createProductModalLabel" aria-hidden="true">
+<div id="createProductModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="createProductModalLabel"
+     aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -210,7 +224,8 @@
                     </div>
                     <div class="form-group">
                         <label for="editSupplierIds">Suppliers</label>
-                        <select name="supplier_ids[]" id="editSupplierIds" multiple required class="form-control selectpicker" data-live-search="true">
+                        <select name="supplier_ids[]" id="editSupplierIds" multiple required
+                                class="form-control selectpicker" data-live-search="true">
                             @foreach ($suppliers as $supplier)
                                 <option value="{{ $supplier->id }}">
                                     {{ $supplier->name }}
@@ -223,7 +238,8 @@
                     </div>
                     <div class="form-group">
                         <label for="category_id">Category</label>
-                        <select name="category_id" id="category_id" required class="form-control selectpicker" data-live-search="true">
+                        <select name="category_id" id="category_id" required class="form-control selectpicker"
+                                data-live-search="true">
                             @foreach ($categories as $category)
                                 <option value="{{ $category->id }}">
                                     {{ $category->name }}
@@ -242,7 +258,8 @@
 </div>
 
 <!-- The Modal for Edit Product -->
-<div id="editProductModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="editProductModalLabel" aria-hidden="true">
+<div id="editProductModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="editProductModalLabel"
+     aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -292,7 +309,8 @@
                     </div>
                     <div class="form-group">
                         <label for="editCategoryId">Category</label>
-                        <select name="category_id" id="editCategoryId" required class="form-control selectpicker" data-live-search="true">
+                        <select name="category_id" id="editCategoryId" required class="form-control selectpicker"
+                                data-live-search="true">
                             @foreach ($categories as $category)
                                 <option value="{{ $category->id }}">
                                     {{ $category->name }}
@@ -313,7 +331,7 @@
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    document.getElementById('openCreateModalBtn').addEventListener('click', function() {
+    document.getElementById('openCreateModalBtn').addEventListener('click', function () {
         $('#createProductModal').modal('show');
     });
 
@@ -326,7 +344,7 @@
         $('#editReorderLevel').val(reorderLevel);
 
         $('#editSupplierIds option').prop('selected', false);
-        suppliers.forEach(function(supplierId) {
+        suppliers.forEach(function (supplierId) {
             $('#editSupplierIds option[value="' + supplierId + '"]').prop('selected', true);
         });
 

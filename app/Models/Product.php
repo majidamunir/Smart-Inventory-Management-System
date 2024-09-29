@@ -25,14 +25,20 @@ class Product extends Model
     {
         return $this->belongsToMany(Supplier::class);
     }
-
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
     }
-
     public function transactionDetails()
     {
         return $this->hasMany(TransactionDetail::class);
+    }
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+    public function needsReorder()
+    {
+        return $this->quantity <= $this->reorder_level;
     }
 }

@@ -7,7 +7,7 @@ use App\Models\Transaction;
 use App\Models\TransactionDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Notification;
-use App\Notifications\LowStockNotification; // Ensure this is included
+use App\Notifications\LowStockNotification;
 use App\Models\User;
 
 class TransactionController extends Controller
@@ -28,7 +28,6 @@ class TransactionController extends Controller
             'quantity.*' => 'required|integer|min:1',
         ]);
 
-        // Create a new transaction
         $transaction = Transaction::create([
             'total_amount' => 0,
         ]);
@@ -39,12 +38,10 @@ class TransactionController extends Controller
             $product = Product::find($productId);
             $quantity = $request->quantity[$key];
 
-            // Check if there is enough stock
             if ($product->quantity < $quantity) {
                 return redirect()->back()->with('error', 'Not enough stock for ' . $product->name);
             }
 
-            // Calculate subtotal
             $subtotal = $product->price * $quantity;
 
             TransactionDetail::create([
@@ -55,19 +52,16 @@ class TransactionController extends Controller
                 'subtotal' => $subtotal,
             ]);
 
-            // Deduct quantity from product stock
             $product->quantity -= $quantity;
             $product->save();
 
             $totalAmount += $subtotal;
 
-            // Trigger notification if stock is low
             if ($product->quantity <= $product->reorder_level) {
                 $this->triggerLowStockNotification($product);
             }
         }
 
-        // Update total amount
         $transaction->total_amount = $totalAmount;
         $transaction->save();
 
@@ -77,15 +71,18 @@ class TransactionController extends Controller
 
     protected function triggerLowStockNotification(Product $product)
     {
-        $managers = User::where('role', 'manager')->get();
+        $managers = User::where('role', 'warehouse_manager')->get();
+        $officers = User::where('role', 'procurement_officer')->get();
+
         Notification::send($managers, new LowStockNotification($product));
+        Notification::send($officers, new LowStockNotification($product));
     }
 
     public function destroy($id)
     {
         $transaction = Transaction::findOrFail($id);
-        $transaction->details()->delete(); // Delete related transaction details
-        $transaction->delete(); // Delete the transaction
+        $transaction->details()->delete();
+        $transaction->delete();
         return redirect()->route('transactions.index')
             ->with('success', 'Transaction Deleted Successfully!');
     }
