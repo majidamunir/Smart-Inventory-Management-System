@@ -22,6 +22,10 @@ class RoleController extends Controller
             'email' => 'required|string|email|unique:users',
             'password' => 'required|string|min:8',
             'role' => 'required|string|in:warehouse_manager,procurement_officer,cashier,supplier',
+            'phone' => 'nullable|string|max:15',
+            'payment_terms' => 'nullable|string',
+            'lead_time' => 'nullable|integer',
+            'rating' => 'nullable|integer',
         ]);
 
         $user = User::create([
@@ -35,8 +39,12 @@ class RoleController extends Controller
             Supplier::create([
                 'name' => $request->name,
                 'email' => $request->email,
+                'phone' => $request->phone,
                 'password' => bcrypt($request->password),
                 'role' => 'supplier',
+                'payment_terms' => $request->payment_terms,
+                'lead_time' => $request->lead_time ?? 7,
+                'rating' => $request->rating,
                 'user_id' => $user->id,
             ]);
         }
@@ -54,6 +62,19 @@ class RoleController extends Controller
         ]);
 
         $user->update($request->only('name', 'email', 'role'));
+
+        if ($user->role === 'supplier') {
+            $supplier = Supplier::firstOrNew(['user_id' => $user->id]);
+
+            $supplier->fill([
+                'name' => $request->name,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'payment_terms' => $request->payment_terms,
+                'lead_time' => $request->lead_time ?? 7,
+                'rating' => $request->rating,
+            ])->save();
+        }
 
         return redirect()->route('roles.index')->with('success', 'User Updated Successfully.');
     }

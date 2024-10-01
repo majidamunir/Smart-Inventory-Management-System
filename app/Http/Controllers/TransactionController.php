@@ -71,8 +71,8 @@ class TransactionController extends Controller
 
     protected function triggerLowStockNotification(Product $product)
     {
-//        $managers = User::where('role', 'procurement_officer')->get();
-//        Notification::send($managers, new LowStockNotification($product));
+        $managers = User::where('role', 'procurement_officer')->get();
+        Notification::send($managers, new LowStockNotification($product));
 
         $orderService = app()->make('App\Services\OrderService');
         $orderService->createOrder($product);

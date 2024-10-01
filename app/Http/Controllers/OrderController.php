@@ -14,16 +14,21 @@ class OrderController extends Controller
     public function index()
     {
         $user = auth()->user();
+
         if ($user->role === 'supplier') {
             $supplier = Supplier::where('user_id', $user->id)->first();
             if ($supplier) {
-                $orders = Order::with('product')->where('supplier_id', $supplier->id)->get();
+                $orders = Order::with('product')
+                    ->where('supplier_id', $supplier->id)
+                    ->where('status', '!=', 'disapproved')
+                    ->get();
             } else {
                 $orders = collect();
             }
         } else {
             $orders = Order::with('product', 'supplier')->get();
         }
+
         return view('order.index', compact('orders'));
     }
 
@@ -31,7 +36,7 @@ class OrderController extends Controller
     {
         $order->update(['status' => 'approved']);
 
-//        $this->sendNotification(User::where('role', 'supplier')->get(), $order, 'approved');
+        $this->sendNotification(User::where('role', 'supplier')->get(), $order, 'approved');
 
         return redirect()->route('orders.index')
             ->with('success', 'Order approved successfully.');
@@ -41,7 +46,7 @@ class OrderController extends Controller
     {
         $order->update(['status' => 'disapproved']);
 
-//        $this->sendNotification(User::where('role', 'procurement_officer')->get(), $order, 'disapproved');
+        $this->sendNotification(User::where('role', 'procurement_officer')->get(), $order, 'disapproved');
 
         return redirect()->route('orders.index')
             ->with('success', 'Order disapproved successfully.');
@@ -64,7 +69,7 @@ class OrderController extends Controller
             'tracking_info' => $trackingInfo,
         ]);
 
-        // $this->sendNotification(User::where('role', 'admin')->get(), $order, 'shipped');
+         $this->sendNotification(User::where('role', 'admin')->get(), $order, 'shipped');
 
         return redirect()->route('orders.index')
             ->with('success', 'Order shipped successfully.');
@@ -82,7 +87,7 @@ class OrderController extends Controller
         $product->increment('quantity', $order->quantity);
         $product->increment('reorder_level', round($order->quantity * 0.1));
 
-//        $this->sendNotification(User::where('role', 'supplier')->get(), $order, 'delivered');
+        $this->sendNotification(User::where('role', 'supplier')->get(), $order, 'delivered');
 
         return redirect()->route('orders.index')
             ->with('success', 'Order marked as delivered and product stock updated.');
@@ -92,7 +97,7 @@ class OrderController extends Controller
     {
         $order->update(['status' => 'cancelled']);
 
-//        $this->sendNotification(User::where('role', 'supplier')->get(), $order, 'cancelled');
+        $this->sendNotification(User::where('role', 'supplier')->get(), $order, 'cancelled');
 
         return redirect()->route('orders.index')
             ->with('success', 'Order cancelled successfully.');
@@ -120,7 +125,7 @@ class OrderController extends Controller
             $supplier->update(['status' => 'accepted']);
         }
 
-//        $this->sendNotification(User::where('role', 'admin')->get(), $order, 'accepted');
+        $this->sendNotification(User::where('role', 'admin')->get(), $order, 'accepted');
 
         return redirect()->route('orders.index')
             ->with('success', 'Order accepted by the supplier. They can now proceed to shipment.');
@@ -135,7 +140,7 @@ class OrderController extends Controller
             $supplier->update(['status' => 'rejected']);
         }
 
-//        $this->sendNotification(User::where('role', 'admin')->get(), $order, 'rejected');
+        $this->sendNotification(User::where('role', 'admin')->get(), $order, 'rejected');
 
         return redirect()->route('orders.index')
             ->with('success', 'Order rejected by the supplier.');

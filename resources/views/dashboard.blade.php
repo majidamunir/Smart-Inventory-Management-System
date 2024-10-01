@@ -205,7 +205,7 @@
             </section>
         @endif
 
-        @if(in_array(auth()->user()->role, ['admin', 'warehouse_manager', 'cashier']))
+        @if(in_array(auth()->user()->role, ['admin', 'warehouse_manager', 'cashier', 'procurement_officer']))
             <section class="card inventory-summary">
                 <h2>Product Inventory</h2>
                 <a href="{{ route('products.index') }}" class="btn btn-light">Products</a>

@@ -14,7 +14,8 @@ class Order extends Model
         'supplier_id',
         'quantity',
         'total_price',
-        'status'
+        'status',
+        'tracking_info'
     ];
 
     public function product()

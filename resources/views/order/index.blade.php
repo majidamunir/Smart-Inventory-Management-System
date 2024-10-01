@@ -126,7 +126,7 @@
                         <th>Total Price</th>
                         <th>Date Created</th>
                         <th>Status</th>
-                        @if(in_array(auth()->user()->role, ['admin', 'procurement_officer']))
+                        @if(in_array(auth()->user()->role, ['admin', 'warehouse_manager']))
                             <th>Actions</th>
                         @endif
                     </tr>
@@ -139,7 +139,7 @@
                             <td>${{ number_format($order->total_price, 2) }}</td>
                             <td>{{ $order->created_at->format('Y-m-d') }}</td>
                             <td class="status-{{ strtolower($order->status) }}">{{ ucfirst($order->status) }}</td>
-                            @if(in_array(auth()->user()->role, ['admin', 'procurement_officer']))
+                            @if(in_array(auth()->user()->role, ['admin', 'warehouse_manager']))
                                 <td>
                                     <!-- View Button -->
                                     <a href="{{ route('orders.show', $order->id) }}" class="btn btn-success"
@@ -152,25 +152,33 @@
                                         <form action="{{ route('orders.approve', $order->id) }}" method="POST"
                                               style="display: inline;" onsubmit="return confirm('Approve this order?')">
                                             @csrf
-                                            <button type="submit" class="btn btn-primary">Approve</button>
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fas fa-check"></i>
+                                            </button>
                                         </form>
                                         <form action="{{ route('orders.disapprove', $order->id) }}" method="POST"
                                               style="display: inline;"
                                               onsubmit="return confirm('Disapprove this order?')">
                                             @csrf
-                                            <button type="submit" class="btn btn-danger">Disapprove</button>
+                                            <button type="submit" class="btn btn-danger">
+                                                <i class="fas fa-times"></i>
+                                            </button>
                                         </form>
                                     @elseif ($order->status === 'shipped')
                                         <form action="{{ route('orders.delivered', $order->id) }}" method="POST"
                                               style="display: inline;"
                                               onsubmit="return confirm('Mark this order as delivered?')">
                                             @csrf
-                                            <button type="submit" class="btn btn-info">Mark as Delivered</button>
+                                            <button type="submit" class="btn btn-info">
+                                                <i class="fas fa-truck-loading"></i>
+                                            </button>
                                         </form>
                                         <form action="{{ route('orders.cancel', $order->id) }}" method="POST"
                                               style="display: inline;" onsubmit="return confirm('Cancel this order?')">
                                             @csrf
-                                            <button type="submit" class="btn btn-warning">Cancel</button>
+                                            <button type="submit" class="btn btn-warning">
+                                                <i class="fas fa-ban"></i>
+                                            </button>
                                         </form>
                                     @endif
                                 </td>
@@ -206,22 +214,22 @@
                     <table class="table table-striped">
                         <thead class="thead-light">
                         <tr>
-                            <th>Order ID</th>
-                            <th>Total Price</th>
-                            <th>Status</th>
-                            <th>Date Created</th>
+{{--                            <th>Order ID</th>--}}
                             <th>Supplier Name</th> <!-- Added Supplier Name Column -->
+                            <th>Total Price</th>
+                            <th>Date Created</th>
+                            <th>Status</th>
                             <th>Actions</th>
                         </tr>
                         </thead>
                         <tbody>
                         @foreach($orders as $order)
                             <tr>
-                                <td>{{ $order->id }}</td>
-                                <td>${{ number_format($order->total_price, 2) }}</td>
-                                <td class="status-{{ strtolower($order->status) }}">{{ ucfirst($order->status) }}</td>
-                                <td>{{ $order->created_at->format('Y-m-d') }}</td>
+{{--                                <td>{{ $order->id }}</td>--}}
                                 <td>{{ $order->supplier->name }}</td> <!-- Display Supplier Name -->
+                                <td>${{ number_format($order->total_price, 2) }}</td>
+                                <td>{{ $order->created_at->format('Y-m-d') }}</td>
+                                <td class="status-{{ strtolower($order->status) }}">{{ ucfirst($order->status) }}</td>
                                 <td>
                                     <!-- View Button -->
                                     <a href="{{ route('orders.show', $order->id) }}" class="btn btn-success"
