@@ -13,8 +13,9 @@ class CreateOrdersTable extends Migration
             $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
             $table->foreignId('supplier_id')->constrained('suppliers')->onDelete('cascade');
             $table->integer('quantity');
-            $table->enum('status', ['pending', 'delivered', 'cancelled'])->default('pending');
-            $table->date('expected_delivery_date')->nullable();
+            $table->decimal('total_price', 10, 2);
+            $table->enum('status', ['pending', 'approved', 'disapproved', 'accepted', 'rejected', 'shipped', 'delivered', 'cancelled'])->default('pending'); // Order statuses
+            $table->string('tracking_info')->nullable();
             $table->timestamps();
         });
     }

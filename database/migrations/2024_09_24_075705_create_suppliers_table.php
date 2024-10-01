@@ -14,6 +14,9 @@ class CreateSuppliersTable extends Migration
             $table->string('email')->unique();
             $table->string('password')->nullable();
             $table->enum('role', ['supplier']);
+            $table->integer('lead_time')->default(7);
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

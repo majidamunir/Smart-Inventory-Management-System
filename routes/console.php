@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Schedule;
-use App\Console\Commands\CheckStockLevels;
+use App\Console\Commands\CheckLowStockProducts;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 

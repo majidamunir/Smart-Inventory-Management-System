@@ -9,7 +9,13 @@ class Order extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['product_id', 'supplier_id', 'quantity', 'status', 'expected_delivery_date'];
+    protected $fillable = [
+        'product_id',
+        'supplier_id',
+        'quantity',
+        'total_price',
+        'status'
+    ];
 
     public function product()
     {
@@ -21,3 +27,4 @@ class Order extends Model
         return $this->belongsTo(Supplier::class);
     }
 }
+

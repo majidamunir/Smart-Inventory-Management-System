@@ -37,8 +37,4 @@ class Product extends Model
     {
         return $this->hasMany(Order::class);
     }
-    public function needsReorder()
-    {
-        return $this->quantity <= $this->reorder_level;
-    }
 }

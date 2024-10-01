@@ -109,9 +109,11 @@
     @endif
 
     <!-- Button to trigger transaction creation -->
-    <button class="btn btn-primary mb-3" id="openCreateModalBtn">
-        <i class="fas fa-plus"></i> Add Transaction
-    </button>
+    @if(auth()->user()->role == 'admin' || auth()->user()->role == 'cashier')
+        <button class="btn btn-primary mb-3" id="openCreateModalBtn">
+            <i class="fas fa-plus"></i> Add Transaction
+        </button>
+    @endif
 
     <!-- Create Transaction Modal -->
     <div id="createTransactionModal" class="modal fade" tabindex="-1" role="dialog"

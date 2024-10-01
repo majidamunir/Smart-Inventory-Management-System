@@ -92,9 +92,11 @@
         </div>
     @endif
 
+    @if(auth()->user()->role === 'admin') <!-- Only show for admin -->
     <button class="btn btn-primary mb-3" id="openCreateModalBtn">
         <i class="fas fa-plus"></i> Add Role
     </button>
+    @endif
 
     <!-- Table of Roles -->
     <div class="card mb-4">
@@ -108,7 +110,9 @@
                     <th>Name</th>
                     <th>Email</th>
                     <th>Role</th>
+                    @if(auth()->user()->role === 'admin') <!-- Only show for admin -->
                     <th>Actions</th>
+                    @endif
                 </tr>
                 </thead>
                 <tbody>
@@ -117,6 +121,7 @@
                         <td>{{ $user->name }}</td>
                         <td>{{ $user->email }}</td>
                         <td>{{ $user->role }}</td>
+                        @if(auth()->user()->role === 'admin') <!-- Only show for admin -->
                         <td>
                             <button class="btn btn-info" onclick="openEditModal('{{ $user->id }}', '{{ $user->name }}', '{{ $user->email }}', '{{ $user->role }}')">
                                 <i class="fas fa-edit"></i>
@@ -129,6 +134,7 @@
                                 </button>
                             </form>
                         </td>
+                        @endif
                     </tr>
                 @endforeach
                 </tbody>

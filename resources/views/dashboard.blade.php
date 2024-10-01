@@ -174,13 +174,14 @@
             <li><a href="{{ route('categories.index') }}"><i class="fas fa-box"></i> Categories</a></li>
         @endif
         @if(in_array(auth()->user()->role, ['admin', 'warehouse_manager', 'procurement_officer']))
-            <li><a href="#"><i class="fas fa-shopping-cart"></i> Orders</a></li>
+            <li><a href="{{ route('orders.index') }}"><i class="fas fa-shopping-cart"></i> Orders</a></li>
         @endif
-        @if(in_array(auth()->user()->role, ['admin', 'warehouse_manager', 'supplier']))
-            <li><a href="#"><i class="fas fa-truck"></i> Suppliers</a></li>
+        @if(in_array(auth()->user()->role, ['admin', 'warehouse_manager', 'cashier']))
+            <li><a href="{{ route('transactions.index') }}"><i class="fas fa-money-bill-alt"></i> Transactions</a></li>
         @endif
-        <li><a href="#"><i class="fas fa-chart-line"></i> Reports</a></li>
-        <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+        @if((auth()->user()->role === 'supplier'))
+            <li><a href="{{ route('orders.index') }}"><i class="fas fa-truck"></i> Suppliers</a></li>
+        @endif
     </ul>
     <form action="{{ route('logout') }}" method="POST" style="margin-top: auto; display: inline;">
         @csrf
@@ -197,7 +198,7 @@
     </header>
 
     <main class="main-content">
-        @if(auth()->user()->role === 'admin')
+        @if(in_array(auth()->user()->role, ['admin', 'warehouse_manager']))
             <section class="card inventory-summary">
                 <h2>User Roles</h2>
                 <a href="{{ route('roles.index') }}" class="btn btn-light">Users</a>
@@ -205,26 +206,20 @@
         @endif
 
         @if(in_array(auth()->user()->role, ['admin', 'warehouse_manager', 'cashier']))
-            <section class="card recent-orders-card">
-                <h2>Product Categories</h2>
-                <a href="{{ route('categories.index') }}" class="btn btn-light">Categories</a>
-            </section>
             <section class="card inventory-summary">
                 <h2>Product Inventory</h2>
                 <a href="{{ route('products.index') }}" class="btn btn-light">Products</a>
+            </section>
+            <section class="card recent-orders-card">
+                <h2>Product Categories</h2>
+                <a href="{{ route('categories.index') }}" class="btn btn-light">Categories</a>
             </section>
         @endif
 
         @if(in_array(auth()->user()->role, ['admin', 'warehouse_manager', 'procurement_officer']))
             <section class="card recent-orders-card">
                 <h2>Recent Orders</h2>
-{{--                <a href="{{ route('orders.index') }}" class="btn btn-light">Orders</a>--}}
-            </section>
-        @endif
-
-        @if(in_array(auth()->user()->role, ['admin', 'warehouse_manager', 'supplier']))
-            <section class="card supplier-performance">
-                <h2>Supplier Performance</h2>
+                <a href="{{ route('orders.index') }}" class="btn btn-light">Orders</a>
             </section>
         @endif
 
@@ -235,13 +230,12 @@
             </section>
         @endif
 
-        <section class="card sales-overview">
-            <h2>Sales Overview</h2>
-        </section>
-
-        <section class="card warehouse-utilization">
-            <h2>Inventory Reports</h2>
-        </section>
+        @if((auth()->user()->role === 'supplier'))
+            <section class="card supplier-performance">
+                <h2>Supplier Performance</h2>
+                <a href="{{ route('orders.index') }}" class="btn btn-light">Suppliers</a>
+            </section>
+        @endif
     </main>
 
     <footer class="footer">

@@ -37,6 +37,7 @@ class RoleController extends Controller
                 'email' => $request->email,
                 'password' => bcrypt($request->password),
                 'role' => 'supplier',
+                'user_id' => $user->id,
             ]);
         }
 
