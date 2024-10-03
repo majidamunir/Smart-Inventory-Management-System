@@ -50,7 +50,7 @@ class OrderService
     public function calculateOrderQuantity(Product $product)
     {
         $orderQuantity = $product->reorder_level - $product->quantity;
-        return max(20, $orderQuantity);
+        return max(50, $orderQuantity);
     }
 
     public function updateProductStockAndReorderLevel(Order $order)

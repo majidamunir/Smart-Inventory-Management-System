@@ -36,11 +36,15 @@ class OrderController extends Controller
     {
         $order->update(['status' => 'approved']);
 
-        $this->sendNotification(User::where('role', 'supplier')->get(), $order, 'approved');
+        $supplier = $order->supplier;
+        if ($supplier && $supplier->user) {
+            $this->sendNotification($supplier->user, $order, 'approved');
+        }
 
         return redirect()->route('orders.index')
             ->with('success', 'Order approved successfully.');
     }
+
 
     public function disapproveOrder(Order $order)
     {
@@ -69,7 +73,8 @@ class OrderController extends Controller
             'tracking_info' => $trackingInfo,
         ]);
 
-         $this->sendNotification(User::where('role', 'admin')->get(), $order, 'shipped');
+        $usersToNotify = User::whereIn('role', ['admin', 'warehouse_manager'])->get();
+        $this->sendNotification($usersToNotify, $order, 'shipped');
 
         return redirect()->route('orders.index')
             ->with('success', 'Order shipped successfully.');
@@ -87,7 +92,10 @@ class OrderController extends Controller
         $product->increment('quantity', $order->quantity);
         $product->increment('reorder_level', round($order->quantity * 0.1));
 
-        $this->sendNotification(User::where('role', 'supplier')->get(), $order, 'delivered');
+        $supplier = $order->supplier;
+        if ($supplier && $supplier->user) {
+            $this->sendNotification($supplier->user, $order, 'delivered');
+        }
 
         return redirect()->route('orders.index')
             ->with('success', 'Order marked as delivered and product stock updated.');
@@ -97,7 +105,10 @@ class OrderController extends Controller
     {
         $order->update(['status' => 'cancelled']);
 
-        $this->sendNotification(User::where('role', 'supplier')->get(), $order, 'cancelled');
+        $supplier = $order->supplier;
+        if ($supplier && $supplier->user) {
+            $this->sendNotification($supplier->user, $order, 'cancelled');
+        }
 
         return redirect()->route('orders.index')
             ->with('success', 'Order cancelled successfully.');
@@ -120,8 +131,6 @@ class OrderController extends Controller
     {
         $order->update(['status' => 'accepted']);
 
-        $this->sendNotification(User::where('role', 'admin')->get(), $order, 'accepted');
-
         return redirect()->route('orders.index')
             ->with('success', 'Order accepted by the supplier. They can now proceed to shipment.');
     }
@@ -130,7 +139,8 @@ class OrderController extends Controller
     {
         $order->update(['status' => 'rejected']);
 
-        $this->sendNotification(User::where('role', 'admin')->get(), $order, 'rejected');
+        $usersToNotify = User::whereIn('role', ['admin', 'warehouse_manager'])->get();
+        $this->sendNotification($usersToNotify, $order, 'rejected');
 
         return redirect()->route('orders.index')
             ->with('success', 'Order rejected by the supplier.');

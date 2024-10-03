@@ -121,7 +121,7 @@
             <br>
 
             <!-- Admin Actions for Pending Orders -->
-            @if(in_array(auth()->user()->role, ['admin', 'procurement_officer']))
+            @if(in_array(auth()->user()->role, ['admin', 'warehouse_manager']))
                 @if($order->status === 'pending')
                     <form action="{{ route('orders.approve', $order->id) }}" method="POST" style="display:inline;">
                         @csrf

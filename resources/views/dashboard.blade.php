@@ -162,6 +162,27 @@
             color: #000;
         }
 
+        .user-button {
+            background-color: #a2f3c6;
+            border: none;
+            color: #000;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s, transform 0.3s;
+            width: 300px;
+        }
+        .user-button:hover {
+            background-color: #a2f3c6;
+            transform: scale(1.05);
+        }
+
     </style>
 </head>
 <body>
@@ -169,7 +190,7 @@
     <h2>Admin Dashboard</h2>
     <ul>
         <li><a href="{{ route('dashboard') }}"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-        @if(in_array(auth()->user()->role, ['admin', 'warehouse_manager', 'cashier']))
+        @if(in_array(auth()->user()->role, ['admin', 'warehouse_manager', 'cashier', 'procurement_officer']))
             <li><a href="{{ route('products.index') }}"><i class="fas fa-box"></i> Inventory</a></li>
             <li><a href="{{ route('categories.index') }}"><i class="fas fa-box"></i> Categories</a></li>
         @endif
@@ -196,6 +217,14 @@
     <header class="header">
         <h1>Smart Inventory Management System</h1>
     </header>
+
+    <button class="user-button">
+        @if(auth()->check())
+            {{ auth()->user()->name }}
+        @else
+            Guest
+        @endif
+    </button>
 
     <main class="main-content">
         @if(in_array(auth()->user()->role, ['admin', 'warehouse_manager']))

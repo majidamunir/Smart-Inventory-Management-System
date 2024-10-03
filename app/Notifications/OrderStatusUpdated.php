@@ -40,32 +40,32 @@ class OrderStatusUpdated extends Notification implements ShouldQueue
 
             case 'approved':
                 $subject = 'Order Approved';
-                $message = 'The order for the product: ' . $this->order->product->name . ' has been approved.';
+                $message = 'The order for the product: ' . $this->order->product->name . ' has been approved. Please! ' . $this->order->supplier->name . ' check this order.';
                 break;
 
             case 'disapproved':
                 $subject = 'Order Disapproved';
-                $message = 'The order for the product: ' . $this->order->product->name . ' has been disapproved.';
-                break;
-
-            case 'processing':
-                $subject = 'Order is Processing';
-                $message = 'The order for the product: ' . $this->order->product->name . ' is now being processed.';
+                $message = 'Sorry! The order for the product: ' . $this->order->product->name . ' has been disapproved.';
                 break;
 
             case 'shipped':
                 $subject = 'Order Shipped';
-                $message = 'The order for the product: ' . $this->order->product->name . ' has been shipped.';
+                $message = 'The order for the product: ' . $this->order->product->name . ' has been accepted and shipped it.';
+                break;
+
+            case 'rejected':
+                $subject = 'Order Rejected';
+                $message = 'Sorry! The order for the product: ' . $this->order->product->name . ' has been rejected.';
                 break;
 
             case 'delivered':
                 $subject = 'Order Delivered';
-                $message = 'The order for the product: ' . $this->order->product->name . ' has been delivered.';
+                $message = 'Thank you! The order for the product: ' . $this->order->product->name . ' has been delivered.';
                 break;
 
             case 'cancelled':
                 $subject = 'Order Cancelled';
-                $message = 'The order for the product: ' . $this->order->product->name . ' has been cancelled.';
+                $message = 'Sorry! The order for the product: ' . $this->order->product->name . ' has been cancelled.';
                 break;
 
             default:
@@ -78,14 +78,13 @@ class OrderStatusUpdated extends Notification implements ShouldQueue
             ->subject($subject)
             ->line($message)
             ->line('Order Quantity: ' . $this->order->quantity)
-            ->action('View Order', $orderUrl)
+//            ->action('View Order', $orderUrl)
             ->line('Thank you for using our application!');
 
         if ($this->action === 'created') {
             $mailMessage->line('To take action, please review the order:')
                 ->action('Review Order', $orderUrl);
         }
-
         return $mailMessage;
     }
 

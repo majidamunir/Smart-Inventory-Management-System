@@ -12,60 +12,98 @@
             background-color: #f4f4f9;
             color: #333;
         }
+
         .container {
-            max-width: 800px;
+            max-width: 1000px;
             margin-top: 40px;
         }
+
         .card-header {
             background-color: #ffcccb;
             color: #333;
-            font-weight: bold;
         }
+
         .card-body {
             padding: 1.5rem;
         }
-        .card-footer {
-            background-color: #f8f9fa;
+
+        .product-details th {
+            width: 200px;
+            text-align: left;
+            background-color: #ffcccb;
+            padding: 10px;
+            font-weight: bold;
         }
+
+        .product-details td {
+            padding: 10px;
+            text-align: left;
+        }
+
         .btn-primary {
             background-color: #ea8aaf;
             border-color: #ea8aaf;
         }
+
         .btn-primary:hover {
-            background-color: #ea8aaf;
-            border-color: #ea8aaf;
+            background-color: #d78d9b;
+            border-color: #d78d9b;
         }
     </style>
 </head>
 <body>
 <div class="container mt-5">
-    <h1 class="text-center">{{ $product->name }}</h1>
+    <div class="heading-container mb-4 text-center">
+        <h2>{{ $product->name }}</h2>
+    </div>
 
     <div class="card mb-4">
         <div class="card-header">
-            Product Details
+            <h4 class="card-title mb-0">Product Information</h4>
         </div>
         <div class="card-body">
-            <h5 class="card-title">SKU: {{ $product->sku }}</h5>
-            <p class="card-text"><strong>Description:</strong> {{ $product->description }}</p>
-            <p class="card-text"><strong>Price:</strong> ${{ number_format($product->price, 2) }}</p>
-            <p class="card-text"><strong>Quantity Available:</strong> {{ $product->quantity }}</p>
-            <p class="card-text"><strong>Reorder Level:</strong> {{ $product->reorder_level }}</p>
-            <p class="card-text"><strong>Category:</strong> {{ $product->category->name ?? 'N/A' }}</p>
+            <table class="table product-details">
+                <tr>
+                    <th>SKU</th>
+                    <td>{{ $product->sku }}</td>
+                </tr>
+                <tr>
+                    <th>Description</th>
+                    <td>{{ $product->description }}</td>
+                </tr>
+                <tr>
+                    <th>Price</th>
+                    <td>${{ number_format($product->price, 2) }}</td>
+                </tr>
+                <tr>
+                    <th>Quantity Available</th>
+                    <td>{{ $product->quantity }}</td>
+                </tr>
+                <tr>
+                    <th>Reorder Level</th>
+                    <td>{{ $product->reorder_level }}</td>
+                </tr>
+                <tr>
+                    <th>Category</th>
+                    <td>{{ $product->category->name ?? 'N/A' }}</td>
+                </tr>
+            </table>
         </div>
         <div class="card-footer">
-            <strong>Suppliers:</strong>
+{{--            <strong>Suppliers:</strong>--}}
             <ul class="list-unstyled">
                 @foreach($product->suppliers as $supplier)
-                    <li><i class="fas fa-user"></i> {{ $supplier->name }}</li>
+                   <li><strong>Send this Order:</strong> {{ $supplier->name }}</li>
                 @endforeach
             </ul>
         </div>
     </div>
 
-    <a href="{{ route('products.index') }}" class="btn btn-primary mt-3">
-        <i class="fas fa-arrow-left"></i> Back to Products
-    </a>
+    <div class="mt-4">
+        <a href="{{ route('products.index') }}" class="btn btn-primary">
+            Back
+        </a>
+    </div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

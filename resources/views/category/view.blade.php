@@ -12,47 +12,76 @@
             background-color: #f4f4f9;
             color: #333;
         }
+
         .container {
-            max-width: 800px;
+            max-width: 1000px;
             margin-top: 40px;
         }
+
         .card-header {
-            background-color: #cce5ff;
-            color: #ea8aaf;
-            font-weight: bold;
+            background-color: #ffcccb;
+            color: #333;
         }
+
         .card-body {
             padding: 1.5rem;
         }
-        .card-footer {
-            background-color: #f8f9fa;
+
+        .category-details th {
+            width: 200px;
+            text-align: left;
+            background-color: #ffcccb;
+            padding: 10px;
+            font-weight: bold;
         }
+
+        .category-details td {
+            padding: 10px;
+            text-align: left;
+        }
+
         .btn-primary {
             background-color: #ea8aaf;
             border-color: #ea8aaf;
         }
+
         .btn-primary:hover {
-            background-color: #ea8aaf;
-            border-color: #ea8aaf;
+            background-color: #d78d9b;
+            border-color: #d78d9b;
         }
     </style>
 </head>
 <body>
 <div class="container mt-5">
-    <h1 class="text-center">{{ $category->name }}</h1>
+    <div class="heading-container mb-4">
+        <h2 class="text-center">{{ $category->name }}</h2>
+    </div>
 
+    <!-- Category Details -->
     <div class="card mb-4">
         <div class="card-header">
-            Category Details
+            <h4 class="card-title mb-0">Category Information</h4>
         </div>
         <div class="card-body">
-            <p class="card-text"><strong>Description:</strong> {{ $category->description }}</p>
+            <table class="table category-details">
+                <tr>
+                    <th>Name</th>
+                    <td>{{ $category->name }}</td>
+                </tr>
+                <tr>
+                    <th>Description</th>
+                    <td>{{ $category->description }}</td>
+                </tr>
+            </table>
         </div>
     </div>
 
-    <a href="{{ route('categories.index') }}" class="btn btn-primary mt-3">
-        <i class="fas fa-arrow-left"></i> Back to Categories
-    </a>
+    <!-- Back Button -->
+    <div class="mt-4">
+        <a href="{{ route('categories.index') }}" class="btn btn-primary">
+            Back
+        </a>
+    </div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
