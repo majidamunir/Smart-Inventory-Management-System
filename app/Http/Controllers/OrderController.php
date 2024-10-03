@@ -120,11 +120,6 @@ class OrderController extends Controller
     {
         $order->update(['status' => 'accepted']);
 
-        $supplier = $order->supplier;
-        if ($supplier && $supplier->status !== 'accepted') {
-            $supplier->update(['status' => 'accepted']);
-        }
-
         $this->sendNotification(User::where('role', 'admin')->get(), $order, 'accepted');
 
         return redirect()->route('orders.index')
@@ -134,11 +129,6 @@ class OrderController extends Controller
     public function rejectOrderBySupplier(Order $order)
     {
         $order->update(['status' => 'rejected']);
-
-        $supplier = $order->supplier;
-        if ($supplier && $supplier->status !== 'rejected') {
-            $supplier->update(['status' => 'rejected']);
-        }
 
         $this->sendNotification(User::where('role', 'admin')->get(), $order, 'rejected');
 
